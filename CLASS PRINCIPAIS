@@ -1,0 +1,198 @@
+ """
+ Classe que representa uma pergunta do quiz.
+ Contém enunciado, alternativas, resposta correta e metadados.
+ """
+class Pergunta:
+    def __init__(self, enunciado, alternativas, indice_correto, tema, dificuldade, peso):
+        self.enunciado = enunciado
+        self.tema = tema
+        self.dificuldade = dificuldade
+        self.peso = peso
+        self.alternativas = alternativas
+        self.indice_correto = indice_correto
+
+    @property
+    def alternativas(self):
+        return self._alternativas
+
+    @alternativas.setter
+    def alternativas(self, alternativas):
+        if not 3 <= len(alternativas) <= 5:
+            raise ValueError("A pergunta deve ter entre 3 e 5 alternativas.")
+        self._alternativas = alternativas
+
+    @property
+    def indice_correto(self):
+        return self._indice_correto
+
+    @indice_correto.setter
+    def indice_correto(self, indice):
+        if indice < 0 or indice >= len(self.alternativas):
+            raise ValueError("Índice da resposta correta fora do intervalo.")
+        self._indice_correto = indice
+
+    def verificar_resposta(self, indice_resposta):
+        return indice_resposta == self.indice_correto
+
+    def __eq__(self, other):
+  """
+  Impede perguntas duplicadas.
+  Duas perguntas são iguais se tiverem o mesmo enunciado e tema.
+  """
+        return (
+            isinstance(other, Pergunta)
+            and self.enunciado == other.enunciado
+            and self.tema == other.tema
+        )
+
+    def __str__(self):
+        texto = f"{self.enunciado}\n"
+        for i, alt in enumerate(self.alternativas):
+            texto += f"{i + 1}. {alt}\n"
+        return texto
+
+class Quiz:
+"""
+Classe que representa um quiz composto por várias perguntas.
+"""
+    def __init__(self, titulo):
+        self.titulo = titulo
+        self.perguntas = []
+
+    def adicionar_pergunta(self, pergunta):
+        if pergunta not in self.perguntas:
+            self.perguntas.append(pergunta)
+
+    def __len__(self):
+        return len(self.perguntas)
+
+    def __iter__(self):
+        return iter(self.perguntas)
+
+    def pontuacao_maxima(self):
+        return sum(pergunta.peso for pergunta in self.perguntas)
+
+class Usuario:
+
+"""
+Classe que representa um usuário do sistema.
+"""
+    def __init__(self, user_id, nome):
+        self.user_id = user_id
+        self.nome = nome
+        self.tentativas = []
+
+    def adicionar_tentativa(self, tentativa):
+        self.tentativas.append(tentativa)
+
+    def total_tentativas(self):
+        return len(self.tentativas)
+from datetime import datetime
+
+class Tentativa:
+ """
+ Classe que representa uma tentativa de um usuário em um quiz.
+ """
+    def __init__(self, quiz, pontuacao):
+        self.quiz = quiz
+        self.pontuacao = pontuacao
+        self.data = datetime.now()
+import json
+
+class GameController:
+
+"""
+Classe responsável por controlar o fluxo do jogo.
+"""
+    def __init__(self, usuario, quiz, settings_path="config/settings.json"):
+        self.usuario = usuario
+        self.quiz = quiz
+        self.settings = self._carregar_settings(settings_path)
+
+    def _carregar_settings(self, path):
+        with open(path, "r", encoding="utf-8") as arquivo:
+            return json.load(arquivo)
+
+    def pode_jogar(self):
+        max_tentativas = self.settings["max_tentativas"]
+        return self.usuario.total_tentativas() < max_tentativas
+
+    def calcular_pontuacao(self, respostas):
+    """
+    Calcula a pontuação final com base nas respostas do usuário.
+    """
+        pontuacao = 0
+        for pergunta, resposta in zip(self.quiz, respostas):
+            if pergunta.verificar_resposta(resposta):
+                pontuacao += pergunta.peso
+        return pontuacao
+
+from datetime import datetime
+
+class Tentativa:
+"""
+Classe que representa uma tentativa de um usuário em um quiz.
+Cada tentativa registra o quiz realizado, a pontuação obtida
+e a data/hora em que foi executada.
+"""
+
+    def __init__(self, quiz, pontuacao):
+        self.quiz = quiz
+        self.pontuacao = pontuacao
+        self.data = datetime.now()
+
+import json
+
+class GameController:
+ """
+ Classe responsável por controlar o fluxo do jogo.
+ Ela centraliza as regras globais do sistema, como:
+- Número máximo de tentativas
+- Cálculo da pontuação
+- Leitura das configurações do sistema
+"""
+    def __init__(self, usuario, quiz, settings_path="config/settings.json"):
+        self.usuario = usuario
+        self.quiz = quiz
+        self.settings = self._carregar_settings(settings_path)
+
+    def _carregar_settings(self, path):
+
+    """
+    Método interno responsável por ler o arquivo settings.json
+    e retornar as configurações como um dicionário Python.
+    """
+        with open(path, "r", encoding="utf-8") as arquivo:
+            return json.load(arquivo)
+
+    def pode_jogar(self):
+
+      """
+      Verifica se o usuário ainda possui tentativas disponíveis
+      de acordo com o valor definido em settings.json.
+      """
+
+        max_tentativas = self.settings["max_tentativas"]
+        return self.usuario.total_tentativas() < max_tentativas
+
+    def calcular_pontuacao(self, respostas):
+        """
+        Calcula a pontuação final do quiz.
+        Percorre cada pergunta e compara com a resposta do usuário.
+        """
+        pontuacao = 0
+        for pergunta, resposta in zip(self.quiz, respostas):
+            if pergunta.verificar_resposta(resposta):
+                pontuacao += pergunta.peso
+        return pontuacao
+{
+  "duracao_quiz": 300,
+  "max_tentativas": 3,
+  "pesos_dificuldade": {
+    "facil": 1,
+    "medio": 2,
+    "dificil": 3
+  }
+}
+
+
