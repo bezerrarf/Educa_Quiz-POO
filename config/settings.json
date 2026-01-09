@@ -1,9 +1,9 @@
 { 
-} 
 "max_tentativas": 3, 
 "tempo_limite_minutos": 10, 
 "pesos_dificuldade": { 
-"FACIL": 1, 
-"MEDIO": 2, 
-"DIFICIL": 3 
+  "FACIL": 1, 
+  "MEDIO": 2, 
+  "DIFICIL": 3 
+  }
 }
