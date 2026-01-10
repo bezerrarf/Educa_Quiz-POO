@@ -1,3 +1,19 @@
+"""
+Para executar a aplicação, verifique se o UV está corretamente instalado.
+
+Ative o vitual Env no terminal use o comando no linux (ou Codespace):
+-> source .venv/bin/activate
+
+No CMD do windows:
+-> source .venv/bin/activate.bat
+
+Execute o comando do Streamlit via terminal:
+-> streamlit run app.py
+
+Abra no navegador ou use o codigo http
+
+"""
+
 import streamlit as st
 from src.dao.connection import DBConnection
 from src.dao.pergunta_dao import PerguntaDAO
