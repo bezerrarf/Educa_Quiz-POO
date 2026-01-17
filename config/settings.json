@@ -1,9 +1,10 @@
-{    "max_tentativas": 3, 
-    "tempo_limite_minutos": 5, 
-    "qtd_perguntas_quiz": 5, 
-    "pesos_dificuldade": { 
-        "FACIL": 1, 
-        "MEDIO": 2, 
-        "DIFICIL": 3 
-    }  
+{
+    "max_tentativas": 3,
+    "tempo_limite_minutos": 6,
+    "qtd_perguntas_quiz": 5,
+    "pesos_dificuldade": {
+        "FACIL": 1,
+        "MEDIO": 2,
+        "DIFICIL": 3
+    }
 }
