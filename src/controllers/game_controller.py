@@ -1,6 +1,9 @@
 import json
 import os, pandas
 
+ 
+SETTINGS_PATH = os.path.join("config", "settings.json")
+
 class GameController:
     """
     Controlador principal responsável pela orquestração das regras de negócio globais
@@ -17,25 +20,26 @@ class GameController:
         """
         caminho = os.path.join("config", "settings.json")
         try:
-            with open(caminho, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            return {"pesos_dificuldade": {"FACIL": 1, "MEDIO": 2, "DIFICIL": 3}}
+            with open(SETTINGS_PATH, 'r', encoding='utf-8') as f: 
+                return json.load(f) 
+        except FileNotFoundError: 
+            return {"tempo_limite_minutos": 5, "qtd_perguntas_quiz": 5} 
+ 
+    @staticmethod 
+    def salvar_configuracoes(novas_configs): 
+        with open(SETTINGS_PATH, 'w', encoding='utf-8') as f: 
+            json.dump(novas_configs, f, indent=4) 
+ 
+    @staticmethod 
+    def calcular_resultado(acertos, total_perguntas): 
+        """Regra de Negócio: Aprovação se acertos > 70%.""" 
+        if total_perguntas == 0: 
+            return 0, False, "Sem perguntas." 
+         
+        percentual = (acertos / total_perguntas) * 100 
+        aprovado = percentual > 70 
+         
+        msg = "Parabéns! Você domina o assunto." if aprovado else "Estude mais e tente novamente na próxima." 
+        return percentual, aprovado, msg
 
-    @staticmethod
-    def calcular_pontuacao(perguntas_acertadas: list) -> int:
-        """
-        Calcula a pontuação total do usuário baseada nos pesos de dificuldade.
-        Args:
-            perguntas_acertadas (list): Lista de objetos Pergunta que o usuário acertou.
-        Returns:
-            int: Somatório total dos pontos.
-        """
-        config = GameController.carregar_configuracoes()
-        pesos = config.get("pesos_dificuldade", {})
-        total = 0
-        for p in perguntas_acertadas:
-            # Obtém o peso da dificuldade, padrão 1 se não definido
-            total += pesos.get(p.dificuldade, 1)
-        return total
 
