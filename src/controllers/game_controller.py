@@ -1,5 +1,5 @@
 import json
-import os, pandas
+import os
 
  
 SETTINGS_PATH = os.path.join("config", "settings.json")
